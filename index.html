@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📰 Latest News</title>
+    <style>
+        /* Stylish Background */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #ff9966, #ff5e62);
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+
+        h1 {
+            padding: 20px;
+            margin: 0;
+            font-size: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        #news-container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-top: 20px;
+            color: black;
+        }
+
+        .news-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .news-item h3 {
+            color: #ff5e62;
+        }
+
+        .news-item a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .news-item a:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 12px 18px;
+            background: #ff5e62;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #ff9966;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>🌍 Latest News</h1>
+    <button onclick="fetchNews()">🔄 Refresh News</button>
+    <div id="news-container">Loading...</div>
+
+    <script>
+        const apiKey = '10821baea05e423ea506c68efd4e41f0'; // Replace with your News API Key
+        const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
+
+        async function fetchNews() {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                console.log(data); // Debugging ke liye
+
+                const newsContainer = document.getElementById('news-container');
+                newsContainer.innerHTML = '';
+
+                if (!data.articles || data.articles.length === 0) {
+                    newsContainer.innerHTML = '<p>⚠ No news found. Try again later.</p>';
+                    return;
+                }
+
+                data.articles.forEach(article => {
+                    const newsItem = document.createElement('div');
+                    newsItem.classList.add('news-item');
+                    newsItem.innerHTML = `
+                        <h3>${article.title}</h3>
+                        <p>${article.description || 'No description available.'}</p>
+                        <a href="${article.url}" target="_blank">Read more ➡</a>
+                    `;
+                    newsContainer.appendChild(newsItem);
+                });
+            } catch (error) {
+                document.getElementById('news-container').innerHTML = '<p>❌ Failed to load news. Please try again.</p>';
+                console.error('Error fetching news:', error);
+            }
+        }
+
+        fetchNews(); // Page load hone par auto fetch karega
+    </script>
+</body>
+</html>
